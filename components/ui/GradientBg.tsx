@@ -39,25 +39,23 @@ export const BackgroundGradientAnimation = ({
   const [curY, setCurY] = useState(0);
   const [tgX, setTgX] = useState(0);
   const [tgY, setTgY] = useState(0);
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    document.body.style.setProperty(
-      "--gradient-background-start",
-      gradientBackgroundStart
-    );
-    document.body.style.setProperty(
-      "--gradient-background-end",
-      gradientBackgroundEnd
-    );
-    document.body.style.setProperty("--first-color", firstColor);
-    document.body.style.setProperty("--second-color", secondColor);
-    document.body.style.setProperty("--third-color", thirdColor);
-    document.body.style.setProperty("--fourth-color", fourthColor);
-    document.body.style.setProperty("--fifth-color", fifthColor);
-    document.body.style.setProperty("--pointer-color", pointerColor);
-    document.body.style.setProperty("--size", size);
-    document.body.style.setProperty("--blending-value", blendingValue);
-  }, []);
+  <div
+    style={{
+      ["--gradient-background-start" as any]: gradientBackgroundStart,
+      ["--gradient-background-end" as any]: gradientBackgroundEnd,
+      ["--first-color" as any]: firstColor,
+      ["--second-color" as any]: secondColor,
+      ["--third-color" as any]: thirdColor,
+      ["--fourth-color" as any]: fourthColor,
+      ["--fifth-color" as any]: fifthColor,
+      ["--pointer-color" as any]: pointerColor,
+      ["--size" as any]: size,
+      ["--blending-value" as any]: blendingValue,
+    }}
+    className="w-full h-full absolute top-0 left-0"
+  >
+    {children}
+  </div>;
 
   useEffect(() => {
     function move() {
