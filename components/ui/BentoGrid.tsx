@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoCopyOutline } from "react-icons/io5";
 import dynamic from "next/dynamic";
 
@@ -7,12 +7,10 @@ import Lottie from "react-lottie";
 
 import { cn } from "@/lib/utils";
 
-
 const BackgroundGradientAnimation = dynamic(
   () => import("./GradientBg").then((mod) => mod.BackgroundGradientAnimation),
   { ssr: false }
 );
-
 
 // import { BackgroundGradientAnimation } from "./GradientBg";
 import GridGlobe from "./GridGlobe";
@@ -44,7 +42,6 @@ export const BentoGridItem = ({
   id,
   title,
   description,
-
   img,
   imgClassName,
   titleClassName,
@@ -63,6 +60,12 @@ export const BentoGridItem = ({
   const rightLists = ["GIT", "GITHUB", "MYSQL"];
 
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Add mounted state to prevent SSR issues
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const defaultOptions = {
     loop: copied,
@@ -73,13 +76,23 @@ export const BentoGridItem = ({
     },
   };
 
-const handleCopy = () => {
-  const text = "abdelrahmanyasserali100@gmail.com";
-  if (typeof navigator !== "undefined" && navigator.clipboard) {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-  }
-};
+  const handleCopy = () => {
+    if (!mounted) return;
+
+    const text = "abdelrahmanyasserali100@gmail.com";
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          setCopied(true);
+          // Reset after animation
+          setTimeout(() => setCopied(false), 3000);
+        })
+        .catch((err) => {
+          console.error("Failed to copy text: ", err);
+        });
+    }
+  };
 
   return (
     <div
@@ -108,8 +121,9 @@ const handleCopy = () => {
           )}
         </div>
         <div
-          className={`absolute right-0 -bottom-5 ${id === 5 && "w-full opacity-80"
-            } `}
+          className={`absolute right-0 -bottom-5 ${
+            id === 5 && "w-full opacity-80"
+          } `}
         >
           {spareImg && (
             <img
@@ -120,7 +134,7 @@ const handleCopy = () => {
             />
           )}
         </div>
-        {id === 6 && (
+        {id === 6 && mounted && (
           // add background animation , remove the p tag
           <BackgroundGradientAnimation>
             <div className="absolute z-50 inset-0 flex items-center justify-center text-white font-bold px-4 pointer-events-none text-3xl text-center md:text-4xl lg:text-7xl"></div>
@@ -146,7 +160,7 @@ const handleCopy = () => {
           </div>
 
           {/* for the github 3d globe */}
-          {id === 2 && <GridGlobe />}
+          {id === 2 && mounted && <GridGlobe />}
 
           {/* Tech stack list div */}
           {id === 3 && (
@@ -178,15 +192,16 @@ const handleCopy = () => {
               </div>
             </div>
           )}
-          {id === 6 && (
+          {id === 6 && mounted && (
             <div className="mt-5 relative">
               {/* button border magic from tailwind css buttons  */}
               {/* add rounded-md h-8 md:h-8, remove rounded-full */}
               {/* remove focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 */}
               {/* add handleCopy() for the copy the text */}
               <div
-                className={`absolute -bottom-5 right-0 ${copied ? "block" : "block"
-                  }`}
+                className={`absolute -bottom-5 right-0 ${
+                  copied ? "block" : "block"
+                }`}
               >
                 {/* <img src="/confetti.gif" alt="confetti" /> */}
                 <Lottie options={defaultOptions} height={200} width={400} />

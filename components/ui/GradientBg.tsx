@@ -34,13 +34,21 @@ export const BackgroundGradientAnimation = ({
   containerClassName?: string;
 }) => {
   const interactiveRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   const [curX, setCurX] = useState(0);
   const [curY, setCurY] = useState(0);
   const [tgX, setTgX] = useState(0);
   const [tgY, setTgY] = useState(0);
 
+  // Add mounted state to prevent SSR issues
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     function move() {
       if (!interactiveRef.current) return;
       setCurX(curX + (tgX - curX) / 20);
@@ -50,7 +58,7 @@ export const BackgroundGradientAnimation = ({
       )}px, ${Math.round(curY)}px)`;
     }
     move();
-  }, [tgX, tgY]);
+  }, [tgX, tgY, mounted]);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (interactiveRef.current) {
@@ -63,10 +71,17 @@ export const BackgroundGradientAnimation = ({
   const [isSafari, setIsSafari] = useState(false);
 
   useEffect(() => {
-    if (typeof navigator !== "undefined") {
+    if (!mounted) return;
+
+    if (typeof window !== "undefined" && typeof navigator !== "undefined") {
       setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
     }
-  }, []);
+  }, [mounted]);
+
+  // Don't render anything until mounted (client-side)
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div
