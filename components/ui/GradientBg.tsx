@@ -39,36 +39,16 @@ export const BackgroundGradientAnimation = ({
   const [curY, setCurY] = useState(0);
   const [tgX, setTgX] = useState(0);
   const [tgY, setTgY] = useState(0);
-  <div
-    style={{
-      ["--gradient-background-start" as any]: gradientBackgroundStart,
-      ["--gradient-background-end" as any]: gradientBackgroundEnd,
-      ["--first-color" as any]: firstColor,
-      ["--second-color" as any]: secondColor,
-      ["--third-color" as any]: thirdColor,
-      ["--fourth-color" as any]: fourthColor,
-      ["--fifth-color" as any]: fifthColor,
-      ["--pointer-color" as any]: pointerColor,
-      ["--size" as any]: size,
-      ["--blending-value" as any]: blendingValue,
-    }}
-    className="w-full h-full absolute top-0 left-0"
-  >
-    {children}
-  </div>;
 
   useEffect(() => {
     function move() {
-      if (!interactiveRef.current) {
-        return;
-      }
+      if (!interactiveRef.current) return;
       setCurX(curX + (tgX - curX) / 20);
       setCurY(curY + (tgY - curY) / 20);
       interactiveRef.current.style.transform = `translate(${Math.round(
         curX
       )}px, ${Math.round(curY)}px)`;
     }
-
     move();
   }, [tgX, tgY]);
 
@@ -87,6 +67,18 @@ export const BackgroundGradientAnimation = ({
 
   return (
     <div
+      style={{
+        ["--gradient-background-start" as any]: gradientBackgroundStart,
+        ["--gradient-background-end" as any]: gradientBackgroundEnd,
+        ["--first-color" as any]: firstColor,
+        ["--second-color" as any]: secondColor,
+        ["--third-color" as any]: thirdColor,
+        ["--fourth-color" as any]: fourthColor,
+        ["--fifth-color" as any]: fifthColor,
+        ["--pointer-color" as any]: pointerColor,
+        ["--size" as any]: size,
+        ["--blending-value" as any]: blendingValue,
+      }}
       className={cn(
         "w-full h-full absolute overflow-hidden top-0 left-0 bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]",
         containerClassName
@@ -110,7 +102,9 @@ export const BackgroundGradientAnimation = ({
           </filter>
         </defs>
       </svg>
+
       <div className={cn("", className)}>{children}</div>
+
       <div
         className={cn(
           "gradients-container h-full w-full blur-lg",
@@ -126,6 +120,7 @@ export const BackgroundGradientAnimation = ({
             `opacity-100`
           )}
         ></div>
+
         <div
           className={cn(
             `absolute [background:radial-gradient(circle_at_center,_rgba(var(--second-color),_0.8)_0,_rgba(var(--second-color),_0)_50%)_no-repeat]`,
@@ -135,6 +130,7 @@ export const BackgroundGradientAnimation = ({
             `opacity-100`
           )}
         ></div>
+
         <div
           className={cn(
             `absolute [background:radial-gradient(circle_at_center,_rgba(var(--third-color),_0.8)_0,_rgba(var(--third-color),_0)_50%)_no-repeat]`,
@@ -144,6 +140,7 @@ export const BackgroundGradientAnimation = ({
             `opacity-100`
           )}
         ></div>
+
         <div
           className={cn(
             `absolute [background:radial-gradient(circle_at_center,_rgba(var(--fourth-color),_0.8)_0,_rgba(var(--fourth-color),_0)_50%)_no-repeat]`,
@@ -153,6 +150,7 @@ export const BackgroundGradientAnimation = ({
             `opacity-70`
           )}
         ></div>
+
         <div
           className={cn(
             `absolute [background:radial-gradient(circle_at_center,_rgba(var(--fifth-color),_0.8)_0,_rgba(var(--fifth-color),_0)_50%)_no-repeat]`,
